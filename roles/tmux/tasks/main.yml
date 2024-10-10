@@ -1,0 +1,38 @@
+---
+- name: Install tmux using Homebrew
+  community.general.homebrew:
+    name: tmux
+    state: present
+
+- name: Ensure .tmux/plugins directory exists
+  ansible.builtin.file:
+    path: "{{ lookup('ansible.builtin.env', 'HOME') }}/.tmux/plugins"
+    state: directory
+    mode: '0755'
+
+- name: Clone tmux plugin manager (TPM)
+  ansible.builtin.git:
+    repo: "https://github.com/tmux-plugins/tpm"
+    dest: "{{ lookup('ansible.builtin.env', 'HOME') }}/.tmux/plugins/tpm"
+    clone: true
+    version: master
+
+- name: Ensure .config/tmux directory exists
+  ansible.builtin.file:
+    path: "{{ lookup('ansible.builtin.env', 'HOME') }}/.config/tmux"
+    state: directory
+    mode: '0755'
+
+- name: Generate tmux-256color info from ncurses
+  ansible.builtin.shell: |
+    {{ lookup('ansible.builtin.env', 'HOMEBREW_PREFIX') | default('/opt/homebrew') }}/opt/ncurses/bin/infocmp tmux-256color > {{ lookup('ansible.builtin.env', 'HOME') }}/tmux-256color.info
+  args:
+    creates: "{{ lookup('ansible.builtin.env', 'HOME') }}/tmux-256color.info"
+
+- name: Apply tmux-256color info using tic
+  ansible.builtin.shell: |
+    tic -xe tmux-256color {{ lookup('ansible.builtin.env', 'HOME') }}/tmux-256color.info
+  when: ansible_facts.os_family == 'Darwin'
+  args:
+    removes: "{{ lookup('ansible.builtin.env', 'HOME') }}/tmux-256color.info"
+  changed_when: false  # Since the command removes the file, set to false unless the file creation task ran

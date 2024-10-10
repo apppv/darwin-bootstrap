@@ -1,0 +1,17 @@
+- name: Install ~> essential packages using Homebrew
+  ansible.builtin.include_tasks: homebrew.yml
+  tags: common_homebrew
+
+- name: Install ~> essential Homebrew Cask packages
+  ansible.builtin.include_tasks: homebrew_cask.yml
+  tags: common_homebrew_cask
+
+- name: Install ~> GNU utilities
+  ansible.builtin.include_tasks: gnu_utils.yml
+  tags: common_gnu_utils
+
+- name: Configure ~> git
+  ansible.builtin.include_tasks: git_config.yml
+
+- name: Install ~> dev tools
+  ansible.builtin.include_tasks: dev_tools.yml

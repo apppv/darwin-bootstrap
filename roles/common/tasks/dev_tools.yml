@@ -1,0 +1,27 @@
+---
+- name: "Install ~> Dev essentials Homebrew Cask packages"
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - docker # orbstack?
+    - figma
+  when: ansible_distribution == "MacOSX"
+
+- name: "Install ~> Dev essentials Homebrew packages"
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - python@3.12
+    - jq
+    - gum
+    - ffmpeg
+    - imagemagick
+    - tokei
+    - lazydocker
+    - kubernetes-cli
+    - minikube
+    - kubecolor # Colorize your kubectl output
+    - k9s
+    - helm

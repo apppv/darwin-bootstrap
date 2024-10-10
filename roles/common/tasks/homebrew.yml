@@ -1,0 +1,25 @@
+---
+- name: "Install ~> Homebrew packages"
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - curl
+    - git
+    - mas # AppStore CLI
+    - openssl
+    - gettext
+    - watch
+    - autoconf
+    - automake
+    - universal-ctags
+    - ncurses
+    - reattach-to-user-namespace # For TMUX
+    - starship
+    - bat
+    - eza
+    - zoxide
+    - ripgrep
+    - fzf
+    - glow
+    - nmap

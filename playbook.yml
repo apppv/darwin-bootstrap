@@ -1,0 +1,16 @@
+- name: Set up local environment on macOS.
+  hosts: localhost
+  gather_facts: yes
+  pre_tasks:
+    - name: "Check if operating system is supported"
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['distribution'] == 'MacOSX'
+        fail_msg: "Unsupported operating system: {{ ansible_facts['distribution'] }}. This playbook only supports macOS (MacOSX)."
+  roles:
+    - { role: common, tags: common }
+    - { role: fonts, tags: fonts }
+    - { role: macos_osx_defaults, tags: macos_osx_defaults }
+    - { role: tmux, tags: tmux }
+    - { role: neovim, tags: neovim }
+    # - { role: dotfiles, tags: dotfiles }

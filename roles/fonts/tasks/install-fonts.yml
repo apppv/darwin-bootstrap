@@ -1,0 +1,23 @@
+- name: "Ensure font directory exists"
+  ansible.builtin.file:
+    path: "{{ font_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: "Search for installed font files: {{ item.name }}"
+  ansible.builtin.find:
+    paths: "{{ font_dir }}"
+    patterns: "{{ item.pattern }}"
+  register: found_fonts
+
+- name: "Download and install font: {{ item.name }}"
+  ansible.builtin.unarchive:
+    src: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/{{ item.name }}.zip"
+    dest: "{{ font_dir }}/"
+    remote_src: true
+  when: found_fonts.matched == 0
+
+- name: "Update font cache on Linux"
+  ansible.builtin.command: "fc-cache -fv"
+  when: ansible_facts['distribution'] in ['Ubuntu', 'Debian'] and found_fonts.matched == 0
+  changed_when: true

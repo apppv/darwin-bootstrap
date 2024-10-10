@@ -1,0 +1,20 @@
+---
+- name: "Install ~> Homebrew Cask packages"
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - wezterm@nightly
+    - raycast
+    - shottr
+    - 1password
+    - firefox@developer-edition
+    - spotify
+    - telegram
+    - slack
+    - notion
+    - arc
+    - chatgpt
+    - karabiner-elements
+    - nikitabobko/tap/aerospace
+  when: ansible_distribution == "MacOSX"

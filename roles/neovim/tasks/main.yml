@@ -1,0 +1,73 @@
+# Install Neovim dependencies
+- name: Install Neovim dependencies
+  community.general.homebrew:
+    name:
+      - ninja
+      - cmake
+      - gettext
+      - curl
+      - tree-sitter
+    state: present
+
+# Remove existing Neovim binary if it exists
+- name: Remove existing Neovim binary
+  ansible.builtin.file:
+    path: /usr/local/bin/nvim
+    state: absent
+  failed_when: false  # Handle absence instead of using ignore_errors
+
+# Remove existing Neovim shared directory if it exists
+- name: Remove existing Neovim shared directory
+  ansible.builtin.file:
+    path: /usr/local/share/nvim/
+    state: absent
+  failed_when: false  # Handle absence instead of using ignore_errors
+
+# Clone the Neovim repository from GitHub
+- name: Clone Neovim repository
+  ansible.builtin.git:
+    repo: 'https://github.com/neovim/neovim.git'
+    dest: "{{ lookup('env', 'HOME') }}/neovim"
+    version: master  # Lock to a specific branch/tag/commit to ensure idempotency
+    update: false
+
+# Build Neovim from source
+- name: Build Neovim
+  ansible.builtin.command:
+    cmd: 'make CMAKE_BUILD_TYPE=RelWithDebInfo'
+    chdir: "{{ lookup('env', 'HOME') }}/neovim"
+    creates: "{{ lookup('env', 'HOME') }}/neovim/build/bin/nvim"  # Only run if Neovim hasn't been built
+
+# Install Neovim to the system
+- name: Install Neovim
+  ansible.builtin.command:
+    cmd: 'sudo make install'
+    chdir: "{{ lookup('env', 'HOME') }}/neovim"
+    creates: /usr/local/bin/nvim  # Only run if Neovim isn't installed
+
+# Clean Neovim build files
+- name: Clean Neovim build files
+  ansible.builtin.command:
+    cmd: 'make distclean'
+    chdir: "{{ lookup('env', 'HOME') }}/neovim"
+  changed_when: false  # Ensure that cleaning doesn't report as "changed"
+
+# Ensure ~/.config/nvim directory exists
+- name: Ensure Neovim config directory exists
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.config/nvim"
+    state: directory
+    mode: '0755'
+
+# Clone Neovim configuration from GitHub
+- name: Clone Neovim configuration
+  ansible.builtin.git:
+    repo: 'https://github.com/LazyVim/starter'
+    dest: "{{ lookup('env', 'HOME') }}/.config/nvim"
+    version: main  # Lock to the master branch, or use a specific tag/commit
+    update: true
+
+- name: Install pynvim
+  ansible.builtin.command:
+    cmd: 'pip3 install --break-system-packages pynvim'
+  changed_when: false

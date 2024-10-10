@@ -1,0 +1,169 @@
+---
+# System-wide Settings
+
+# Language & Input Settings
+- name: Disable annoying autocorrect
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: "{{ item }}"
+    type: bool
+    value: false
+    state: present
+  with_items:
+    - NSAutomaticDashSubstitutionEnabled
+    - NSAutomaticPeriodSubstitutionEnabled
+    - NSAutomaticQuoteSubstitutionEnabled
+
+- name: Set US English as preferred language
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: AppleLanguages
+    type: array
+    value:
+      - en-US
+    state: present
+
+- name: Show language menu in the top right corner of the boot screen
+  community.general.osx_defaults:
+    domain: com.apple.loginwindow
+    key: showInputMenu
+    type: bool
+    value: true
+    state: present
+
+    # Time & Date Settings
+- name: Setting time format to 24 hour
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: AppleICUForce24HourTime
+    type: bool
+    value: true
+
+    # Privacy Settings
+- name: Disabling personalized ads
+  community.general.osx_defaults:
+    domain: com.apple.AdLib
+    key: allowApplePersonalizedAdvertising
+    type: bool
+    value: false
+
+- name: Enabling force limit ad tracking
+  community.general.osx_defaults:
+    domain: com.apple.AdLib
+    key: forceLimitAdTracking
+    type: bool
+    value: true
+
+    # Dock & Finder Settings
+
+    # Dock Settings
+- name: Enabling dock autohide
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: autohide
+    type: bool
+    value: true
+
+- name: Show recent applications in Dock
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: show-recents
+    type: bool
+    value: false
+    state: present
+
+  # Finder Settings
+- name: Enabling always show file extensions
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: AppleShowAllExtensions
+    type: bool
+    value: true
+
+- name: Enabling finder pathbar
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: ShowPathbar
+    type: bool
+    value: true
+
+- name: Enabling always show hidden files
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: AppleShowAllFiles
+    type: bool
+    value: true
+
+- name: Disabling warning when changing extensions
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: FXEnableExtensionChangeWarning
+    type: bool
+    value: false
+
+- name: Enable PathBar to start at home
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: PathBarRootAtHome
+    type: bool
+    value: true
+
+    # Appearance & Interface
+- name: Show input sources in the top menu bar
+  community.general.osx_defaults:
+    domain: com.apple.TextInputMenu
+    key: visible
+    type: bool
+    value: true
+    state: present
+
+- name: Show Wi-Fi in the top menu bar
+  community.general.osx_defaults:
+    domain: com.apple.controlcenter
+    key: NSStatusItem Visible WiFi
+    type: bool
+    value: true
+    state: present
+
+- name: Show Battery in the top menu bar
+  community.general.osx_defaults:
+    domain: com.apple.controlcenter
+    key: BatteryShowPercentage
+    type: bool
+    value: true
+    state: present
+
+- name: Show Bluetooth in the top menu bar
+  community.general.osx_defaults:
+    domain: com.apple.controlcenter
+    key: NSStatusItem Visible Bluetooth
+    type: bool
+    value: true
+    state: present
+
+- name: Set macOS to Dark Mode
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: AppleInterfaceStyle
+    value: Dark
+    state: present
+
+- name: Enable dragging windows by holding ctrl+cmd
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: NSWindowShouldDragOnGesture
+    type: bool
+    value: true
+
+    # Disk & Network Settings
+
+- name: Disabling writing `.DS_Store` files to USB drives, network, and local disks
+  community.general.osx_defaults:
+    domain: com.apple.desktopservices
+    key: "{{ item }}"
+    type: bool
+    value: true
+  loop:
+    - DSDontWriteNetworkStores
+    - DSDontWriteUSBStores
+    - DSDontWriteLocalStores

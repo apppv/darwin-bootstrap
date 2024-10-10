@@ -1,0 +1,15 @@
+font_dirs:
+  MacOSX: 'Library/Fonts'          # macOS user font directory
+  Ubuntu: '.local/share/fonts'     # Ubuntu user font directory
+  Debian: '.local/share/fonts'     # Debian user font directory
+
+font_dir_suffix: "{{ font_dirs[ansible_facts['distribution']] }}"
+font_dir: "{{ ansible_user_dir }}/{{ font_dir_suffix }}"
+
+nerd_fonts:
+  - name: FiraCode
+    pattern: "FiraCodeNerdFont*.ttf"
+  - name: JetBrainsMono
+    pattern: "JetBrainsMonoNerdFont*.ttf"
+  - name: Monaspace
+    pattern: "Monaspice*.otf"
